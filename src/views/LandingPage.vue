@@ -3,9 +3,6 @@
 		<div style="position: absolute;z-index: 5;" class="m-4">
 			<AppBtn @appclick="startTheShow()">Start your journey</AppBtn>
 		</div>
-		<div class="stars-div">
-			<img :src="imageUrls[selectedUrlInd]" alt="">
-		</div>
 		<div class="dark-div" ref="darkDiv">
 			<audio ref="audioPlayer" :muted="!isMuted">
 				<source src="../assets/star-wars-intro.mp3" type="audio/mpeg">
@@ -34,20 +31,9 @@ import AppBtn from '../components/ui/AppBtn.vue'
 export default {
 	name: 'LandingPage',
 	components: { AppBtn },
-	beforeMount() {
-		this.interVal = setInterval(() => this.selectedUrlInd = (this.selectedUrlInd + 1) % this.imageUrls.length, 1000);
-		const imageUrls = []
-		for (let i = 1; i < 8; i++) {
-			const url = new URL(`../assets/images/star${i}.png`, import.meta.url).href
-			imageUrls.push(url)
-		}
-		this.imageUrls = imageUrls;
-		this.selectedUrlInd = 0
-	},
-	mounted() { },
-	unmounted() {
-		clearInterval(this.interVal)
-	},
+	beforeMount() {},
+	mounted() {},
+	unmounted() {},
 	methods: {
 		startTheShow() {
 			this.$refs.audioPlayer.play();
@@ -59,10 +45,6 @@ export default {
 		return {
 			started: Boolean(localStorage.getItem('hasStarted')),
 			isMuted: false,
-
-			interVal: null,
-			imageUrls: [],
-			selectedUrlInd: 0,
 			content: {
 				title: 'Scrolling Text Effect',
 				paragraphs: [
@@ -106,24 +88,6 @@ export default {
 	}
 }
 
-.stars-div {
-	z-index: 1;
-	position: absolute;
-	height: 100%;
-	width: 100%;
-
-	img {
-		object-fit: cover;
-		height: 100%;
-		opacity: 0.5;
-	}
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-}
 
 @keyframes zoomOut {
 	from {
@@ -137,7 +101,7 @@ export default {
 }
 
 .parent {
-	background: rgb(20, 20, 20);
+	background: transparent;
 	overflow: hidden;
 	font-family: 'Roboto';
 	/* push down the the wrapper by half the page */

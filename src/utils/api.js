@@ -1,0 +1,1 @@
+export const getPlanets="https://swapi.dev/api/planets/";

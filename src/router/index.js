@@ -18,7 +18,7 @@ const router = createRouter({
       path: "/dashboard",
       component: Dashboard,
       name: "Dashboard",
-      meta: { requiresAuth: true, layout: Layout },
+      meta: { layout: Layout },
     },
     // ADD PATH ABOVE THIS LINE
     {
@@ -29,7 +29,7 @@ const router = createRouter({
       path: "/pageNotFound",
       component: PageNotFound,
       name: "PageNotFound",
-      meta: { requiresAuth: false, layout: Layout },
+      meta: { layout: Layout },
     },
     // {
     //   path: '/about',

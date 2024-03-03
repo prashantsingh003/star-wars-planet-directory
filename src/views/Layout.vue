@@ -1,7 +1,7 @@
 <template>
 	<v-app id="inspire">
     <v-app-bar>
-      <v-app-bar-title>
+      <v-app-bar-title class="d-flex justify-center">
         <router-link
           to="/"
         >

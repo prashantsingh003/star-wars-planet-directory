@@ -1,10 +1,14 @@
 <template>
-	<div class="parent" ref="parent" @click="startTheShow">
-		<div style="position: absolute;z-index: 5;" class="m-4">
-			<AppBtn @appclick="startTheShow()">Start your journey</AppBtn>
+	<div class="parent-land" ref="parent" @click="startTheShow">
+		<div class="start">
+			<button @appclick="startTheShow()">Start your journey</button>
+		</div>
+		
+		<div class="dashboard-btn" v-if="playedOnce">
+			<router-link to="/dashboard" class="ma-2">Dashboard</router-link>
 		</div>
 		<div class="dark-div" ref="darkDiv">
-			<audio ref="audioPlayer" :muted="!isMuted">
+			<audio ref="audioPlayer" :muted="isMuted">
 				<source src="../assets/star-wars-intro.mp3" type="audio/mpeg">
 			</audio>
 			<div v-if="started" style="position: fixed; top: 0; right: 0; padding: 1em; border: 1px white;border-radius: 50%;">
@@ -38,12 +42,14 @@ export default {
 		startTheShow() {
 			this.$refs.audioPlayer.play();
 			this.started = true;
-			// localStorage.setItem('hasStarted',true)
+			this.playedOnce=true;
+			localStorage.setItem('playedOnce',true)
 		},
 	},
 	data() {
 		return {
-			started: Boolean(localStorage.getItem('hasStarted')),
+			playedOnce:Boolean(localStorage.getItem('playedOnce')),
+			started: false,
 			isMuted: false,
 			content: {
 				title: 'Scrolling Text Effect',
@@ -62,7 +68,20 @@ export default {
 </script> 
 <style scoped lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap');
-
+.start{
+	position: absolute;
+	z-index: 5;
+	top: 80%;
+	right: 50%;
+	transform: translate(50%, -50%);
+	font-size: 3em;
+	color: #ffc909;
+	border:1px solid currentColor ;
+	background-color: #fff2;
+	border-radius: 0.6em;
+	white-space: nowrap;
+	padding: 0.3em;
+}
 .dark-div {
 	display: flex;
 	position: absolute;
@@ -80,7 +99,7 @@ export default {
 	}
 
 	img.initial {
-		height: 45vh;
+		height: min(45vh,45vw);
 	}
 
 	img.started {
@@ -91,7 +110,7 @@ export default {
 
 @keyframes zoomOut {
 	from {
-		height: 45vh;
+		height: min(45vh,45vw);
 	}
 
 	to {
@@ -100,14 +119,23 @@ export default {
 	}
 }
 
-.parent {
+.parent-land {
 	background: transparent;
 	overflow: hidden;
 	font-family: 'Roboto';
 	/* push down the the wrapper by half the page */
 	position: relative;
 	max-height: 100vh;
-	overflow: hidden;
+}
+.dashboard-btn{
+	z-index: 5;
+	position: absolute;
+	top: 0;
+	left:0;
+	color: #ffc909;
+	a{
+		color: inherit;
+	}
 }
 
 .wrapper {

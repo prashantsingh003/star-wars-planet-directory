@@ -42,6 +42,7 @@ export default{
 
 <style scoped lang="scss">
 .platform-content{
+
 	background: rgb(20, 20, 20);
 	overflow: auto;
 	/* push down the the wrapper by half the page */

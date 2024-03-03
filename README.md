@@ -9,7 +9,7 @@ Welcome to the Star Wars Planets Directory project!
 
 ## Project Deployment
 
-The project is deployed at :url.
+The project is deployed at :([Vercel](https://star-wars-planet-directory-eight.vercel.app/)).
 
 ## Description
 

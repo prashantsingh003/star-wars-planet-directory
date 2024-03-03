@@ -1,11 +1,11 @@
 <template>
-  <div class="page-wapper white-card px-2 px-sm-3 d-flex flex-column align-center justify-center justify-md-start">
+  <div class="page-wapper d-flex flex-column justify-center">
     <!-- <img class="image" src="@/assets/LightMode/pageNotFound.png"/> -->
-    <span>
+    <span class="text-h2 ">
       The page you requested could not be found.
     </span>
     <!-- <router-link to="/dashboard" class="primary-button ma-2">Go To Dashboard</router-link> -->
-    <AppBtn><router-link to="/" class="ma-2">Go Home</router-link></AppBtn>
+    <AppBtn class=" text-h3 "><router-link to="/" class="ma-2">Go Home</router-link></AppBtn>
   </div>
 </template>
 <script>

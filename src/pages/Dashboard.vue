@@ -5,7 +5,7 @@
 		v-model="showDialog"
 	>
 		<template v-slot:default="{ isActive }">
-			<PlanetDetailsCard :planet="selectedPlanet"/>
+			<PlanetDetailsCard :currPlanet="selectedPlanet"/>
 		</template>
 	</v-dialog>
 	<v-container>

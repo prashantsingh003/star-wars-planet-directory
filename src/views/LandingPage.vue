@@ -1,6 +1,6 @@
 <template>
 	<div class="parent-land" ref="parent" @click="startTheShow">
-		<div class="start">
+		<div class="start" v-if="!started">
 			<button @appclick="startTheShow()">Start your journey</button>
 		</div>
 		

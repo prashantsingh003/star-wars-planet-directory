@@ -40,6 +40,7 @@ export default {
 	unmounted() {},
 	methods: {
 		startTheShow() {
+			this.$router.push('/data');
 			this.$refs.audioPlayer.play();
 			this.started = true;
 			this.playedOnce=true;

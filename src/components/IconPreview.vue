@@ -9,7 +9,7 @@
 				Sort (A-Z)
 				<nile-icon :name="azSort ? 'arrowleft' : 'arrowright'"></nile-icon>
 			</nile-button>
-			<nile-input :value="search" @nile-input="handleInput()" placeholder="Search"></nile-input>
+			<nile-input :value="search" @nile-input="handleInput" placeholder="Search"></nile-input>
 		</div>
 
 		<div class="card control-panel">

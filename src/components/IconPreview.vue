@@ -1,5 +1,6 @@
 <template>
 	<div class="primary-container">
+		<!-- DATA CONTROL PANEL -->
 		<div class="card control-panel">
 			<nile-button @click="handleSort()">
 				Sort
@@ -10,23 +11,30 @@
 				<nile-icon :name="azSort ? 'arrowleft' : 'arrowright'"></nile-icon>
 			</nile-button>
 			<nile-input :value="search" @nile-input="handleInput" placeholder="Search"></nile-input>
+			<div>
+				<!-- <span>Names</span> -->
+				<nile-slide-toggle label="Names" :isChecked="showNames" @nile-change="(e)=>showNames=e.detail.checked">  </nile-slide-toggle>
+			</div>
 		</div>
 
-		<div class="card control-panel">
+		<!-- CARD DATA PANEL -->
+		<div class="card data-panel">
 			<nile-button variant="secondary-blue">Total Count: {{ filteredIcons.length }}</nile-button>
 			<nile-button variant="secondary-blue">
 				Zero Count: {{ filteredIcons.reduce((acc, curr) => acc + Number(curr.frequency === 0), 0) }}
 			</nile-button>
 		</div>
-		<div class="icons-container card">
-			<nile-tooltip v-for="(icon, index) in filteredIcons" :key="icon.name" :content="icon.name">
-				<div class="icon-div">
-					<div>
-						<nile-badge :variant="icon.frequency ? 'info' : 'error'">{{ icon.frequency }}</nile-badge>
+
+		<!-- LISTED ICONS -->
+		<div class="icons-data-container card">
+			<div class="icon-div" v-for="(icon, index) in filteredIcons" :key="icon.name">
+				<v-badge :content="icon.frequency" :color="icon.frequency?'primary':'error'">
+					<div class="icon-wrapper">
+							<nile-icon :name="icon.name" size="32"></nile-icon>
 					</div>
-					<div><nile-icon :name="icon.name" size="32"></nile-icon></div>
-				</div>
-			</nile-tooltip>
+				</v-badge>
+				<div v-if="showNames" class="icon-name">{{ icon.name }}</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -40,6 +48,7 @@ export default {
 			iconsData: [],
 			sort:false,
 			azSort:false,
+			showNames:false,
 			filteredIcons:[],
 			search:'',
 		}
@@ -95,26 +104,6 @@ export default {
 }
 </script>
 <style>
-.primary-container{
-	padding: 10px;
-}
-.control-panel{
-	display: flex;
-	gap:20px;
-}
-.control-panel>nile-input{
-	flex:1;
-}
-.icons-container{
-	overflow-y: auto;
-	max-height: calc(100vh - 240px);
-
-	display:flex;
-	flex-wrap:wrap;
-	gap:10px;
-	padding:10px;
-}
-
 /* Card Container */
 .card {
 	padding: 15px;
@@ -125,27 +114,71 @@ export default {
 	margin: 20px;
 }
 
+.card:hover {
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.primary-container{
+	padding: 10px;
+	color: #fff;
+}
+.control-panel,.data-panel{
+	display: flex;
+	gap:20px;
+	align-items: center;
+}
+.control-panel>nile-input{
+	flex:1;
+}
+
+.control-panel{
+	background-color: white;
+}
+
+.icons-data-container{
+	overflow-y: auto;
+	max-height: calc(100vh - 240px);
+
+	display:flex;
+	flex-wrap:wrap;
+	gap:20px;
+	padding:10px;
+}
+
 .icon-div{
+	z-index: 2;
 	display:flex;
 	flex-direction:column;
 	align-items:center;
 	gap:5px;
-	aspect-ratio: 1 / 1;
+	position:relative;
+	color: #555;
+	/* width: 100px; */
 
 	transition-duration: 200ms;
-	padding: 10px;
+	/* padding: 10px; */
 	background-color: #fff;
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	margin: 10px;
+}
+
+.icon-wrapper{
+padding: 10px;
 }
 
 .icon-div:hover{
 	scale:1.5;
 }
-/* Hover effect */
-.card:hover {
-	/* transform: translateY(-5px); */
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+.icon-name{
+	max-width: 100%;
+	overflow: auto;
+	white-space: nowrap;
+	padding: 0 10px;
 }
+.icon-name::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hover effect */
 </style>

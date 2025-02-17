@@ -1,5 +1,7 @@
 @import './assets/styles/main.scss';
-:root {
+@import '@aquera/nile/lib/styles/variables.css';
+*{
+  box-sizing: border-box;
 }
 html{
   // default is 1rem or 20px

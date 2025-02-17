@@ -1,17 +1,19 @@
 <template>
     <div class="platform-content">
-      <div class="stars-div">
-        <img :src="imageUrls[selectedUrlInd]" alt="">
-      </div>
       <!-- Component = layout component (whatever layout value is set in route meta properties) -->
       <component :is="this.$route.meta.layout || 'div'">
         <!-- The below router view is only for the routes without specified layouts -->
         <router-view />
       </component>
+      <div class="stars-div">
+        <img :src="imageUrls[selectedUrlInd]" alt="">
+      </div>
     </div>
 </template>
 
 <script>
+
+import '@aquera/nile-elements';
 import Layout from './views/Layout.vue';
 export default{
   name:'app',
@@ -42,8 +44,6 @@ export default{
 
 <style scoped lang="scss">
 .platform-content{
-
-	background: rgb(20, 20, 20);
 	overflow: auto;
 	/* push down the the wrapper by half the page */
 	position: relative;
@@ -51,8 +51,10 @@ export default{
 	width: 100%;
 
   .stars-div {
+    z-index: -999;
+    top:0;
     position: absolute;
-    height: 100%;
+    height: 99%;
     width: 100%;
 
     img {

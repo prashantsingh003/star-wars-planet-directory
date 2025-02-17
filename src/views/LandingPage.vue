@@ -52,7 +52,7 @@ export default {
 			started: false,
 			isMuted: false,
 			content: {
-				title: 'Scrolling Text Effect',
+				title: 'A long time ago in a galaxy far, far away....',
 				paragraphs: [
 					'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad maiores aut cupiditate unde ipsam ut fugit deleniti non autem, ab, tempore ratione quo, nihil delectus sequi incidunt voluptates quis. Expedita!',
 					'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad maiores aut cupiditate unde ipsam ut fugit deleniti non autem, ab, tempore ratione quo, nihil delectus sequi incidunt voluptates quis. Expedita!',

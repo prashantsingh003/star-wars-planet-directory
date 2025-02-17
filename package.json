@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aquera/nile": "^0.3.57",
+    "@aquera/nile-elements": "^0.1.25",
     "@mdi/font": "^7.4.47",
     "axios": "^1.6.7",
     "sass": "^1.71.1",

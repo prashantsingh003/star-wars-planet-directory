@@ -3,8 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Layout from '../views/Layout.vue'
 import LandingPage from '../views/LandingPage.vue';
+import DataView from '../views/Data.vue';
 import PageNotFound from '../pages/PageNotFound.vue'
 import Dashboard from '../pages/Dashboard.vue';
+import Iconpreview from '../components/IconPreview.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +21,21 @@ const router = createRouter({
       component: Dashboard,
       name: "Dashboard",
       meta: { layout: Layout },
+    },
+    {
+      path: '/data',
+      name: 'Data',
+      component: DataView,
+      children: [
+        {
+          path: '',
+          component: Iconpreview,
+        },
+        {
+          path: 'icon-preview',
+          component: Iconpreview,
+        },
+      ],
     },
     // ADD PATH ABOVE THIS LINE
     {

@@ -30,7 +30,7 @@
 				</nile-button>
 			</v-badge>
 		</div>
-		
+
 		<!-- LISTED ICONS -->
 		<div class="icons-data-container card">
 			<div 
@@ -52,12 +52,16 @@
 				<div v-if="showNames" class="icon-name">{{ icon.name }}</div>
 			</div>
 		</div>
+
+		<IconCart :icons="cart" @remove-icon="removeFromCart" @clear-cart="cart=[]" v-if="cart.length"> </IconCart>
 	</div>
 </template>
 <script>
 import ICON_DATA from '../data/icons_data.json';
+import IconCart from './IconCart.vue'
 export default {
 	name: 'app-icon-preview',
+	components:{IconCart},
 	data() {
 		return {
 			iconFreq:Object.keys(ICON_DATA).map(k=>({name:k,frequency:ICON_DATA[k]})),
@@ -119,7 +123,6 @@ export default {
 			this.filteredIcons = this.iconFreq.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase()))
 		},
 		cartClick(icon){
-			console.log(icon)
 			const isThere=this.cart.find(i=>i==icon);
 			if(isThere) this.removeFromCart(icon)
 			else this.addToCart(icon)
@@ -163,7 +166,7 @@ export default {
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	transition: transform 0.2s, box-shadow 0.2s;
-	margin: 20px;
+	margin: 10px;
 }
 
 .card:hover {
@@ -173,6 +176,10 @@ export default {
 .primary-container{
 	padding: 10px;
 	color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	height: 99vh;
 }
 .control-panel,.data-panel{
 	display: flex;
@@ -189,7 +196,7 @@ export default {
 
 .icons-data-container{
 	overflow-y: auto;
-	max-height: calc(100vh - 240px);
+	flex:1;
 
 	display:flex;
 	flex-wrap:wrap;

@@ -12,8 +12,8 @@
 			</nile-button>
 			<nile-input :value="search" @nile-input="handleInput" placeholder="Search"></nile-input>
 			<div>
-				<!-- <span>Names</span> -->
 				<nile-slide-toggle label="Names" :isChecked="showNames" @nile-change="(e)=>showNames=e.detail.checked">  </nile-slide-toggle>
+				<nile-slide-toggle label="Carting" :isChecked="cartEnabled" @nile-change="(e)=>cartEnabled=e.detail.checked">  </nile-slide-toggle>
 			</div>
 		</div>
 
@@ -23,12 +23,28 @@
 			<nile-button variant="secondary-blue">
 				Zero Count: {{ filteredIcons.reduce((acc, curr) => acc + Number(curr.frequency === 0), 0) }}
 			</nile-button>
+			<v-spacer></v-spacer>
+			<v-badge :content="cart.length">
+				<nile-button>
+					Cart
+				</nile-button>
+			</v-badge>
 		</div>
-
+		
 		<!-- LISTED ICONS -->
 		<div class="icons-data-container card">
-			<div class="icon-div" v-for="(icon, index) in filteredIcons" :key="icon.name">
-				<v-badge :content="icon.frequency" :color="icon.frequency?'primary':'error'">
+			<div 
+				class="icon-div" 
+				@click="this.cartEnabled?cartClick(icon.name):''" 
+				v-for="(icon, index) in filteredIcons" 
+				:key="icon.name"
+				@mouseover="hoveredIcon=icon.name"
+				@mouseleave="hoveredIcon=''"
+			>
+				<v-badge 
+					:content="badgeContent(icon)" 
+					:color="badgeColor(icon)"
+					>
 					<div class="icon-wrapper">
 							<nile-icon :name="icon.name" size="32"></nile-icon>
 					</div>
@@ -51,6 +67,9 @@ export default {
 			showNames:false,
 			filteredIcons:[],
 			search:'',
+			hoveredIcon:'',
+			cartEnabled:false,
+			cart:[]
 		}
 	},
 	beforeMount() { },
@@ -59,7 +78,6 @@ export default {
 	},
 	unmounted() { },
 	methods: {
-		setIconsData() { },
 		handleSort() {
 			if (this.sort) {
 				this.filteredIcons.sort((a, b) => a.frequency < b.frequency ? 1 : -1)
@@ -99,8 +117,42 @@ export default {
 		handleInput(e) {
 			this.search = e.detail.value;
 			this.filteredIcons = this.iconFreq.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase()))
+		},
+		cartClick(icon){
+			console.log(icon)
+			const isThere=this.cart.find(i=>i==icon);
+			if(isThere) this.removeFromCart(icon)
+			else this.addToCart(icon)
+		},
+		addToCart(icon){
+			this.cart.push(icon)
+		},
+		removeFromCart(icon){
+			this.cart=this.cart.filter(i=>i!==icon)
+		},
+		getColor({frequency,name},hover){
+			if(this.cartEnabled && hover){
+				if(this.cart.includes(name)) return 'error';
+				else return 'success'
+			}
+			else return 'error'
 		}
 	},
+	computed: {
+    badgeColor() {
+        return (icon) => {
+					if(this.cart.includes(icon.name)) return 'error';
+					else if(this.cartEnabled&&this.hoveredIcon == icon.name) return 'success';
+					return 'primary'
+        };
+    },
+    badgeContent() {
+        return (icon) => {
+					if (!this.cartEnabled || this.hoveredIcon !== icon.name) return icon.frequency;
+					return this.cart.includes(icon.name) ? '-' : '+';
+        };
+    }
+  }
 }
 </script>
 <style>

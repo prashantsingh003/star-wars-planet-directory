@@ -12,8 +12,10 @@
 			</nile-button>
 			<nile-input :value="search" @nile-input="handleInput" placeholder="Search"></nile-input>
 			<div>
-				<nile-slide-toggle label="Names" :isChecked="showNames" @nile-change="(e)=>showNames=e.detail.checked">  </nile-slide-toggle>
-				<nile-slide-toggle label="Carting" :isChecked="cartEnabled" @nile-change="(e)=>cartEnabled=e.detail.checked">  </nile-slide-toggle>
+				<nile-slide-toggle label="Names" :isChecked="showNames" @nile-change="(e) => showNames = e.detail.checked">
+				</nile-slide-toggle>
+				<nile-slide-toggle label="Carting" :isChecked="cartEnabled" @nile-change="(e) => cartEnabled = e.detail.checked">
+				</nile-slide-toggle>
 			</div>
 		</div>
 
@@ -33,27 +35,18 @@
 
 		<!-- LISTED ICONS -->
 		<div class="icons-data-container card">
-			<div 
-				class="icon-div" 
-				@click="this.cartEnabled?cartClick(icon.name):''" 
-				v-for="(icon, index) in filteredIcons" 
-				:key="icon.name"
-				@mouseover="hoveredIcon=icon.name"
-				@mouseleave="hoveredIcon=''"
-			>
-				<v-badge 
-					:content="badgeContent(icon)" 
-					:color="badgeColor(icon)"
-					>
+			<div class="icon-div" @click="this.cartEnabled ? cartClick(icon.name) : ''" v-for="(icon, index) in filteredIcons"
+				:key="icon.name" @mouseover="hoveredIcon = icon.name" @mouseleave="hoveredIcon = ''">
+				<v-badge :content="badgeContent(icon)" :color="badgeColor(icon)">
 					<div class="icon-wrapper">
-							<nile-icon :name="icon.name" size="32"></nile-icon>
+						<nile-icon :name="icon.name" size="32"></nile-icon>
 					</div>
 				</v-badge>
 				<div v-if="showNames" class="icon-name">{{ icon.name }}</div>
 			</div>
 		</div>
 
-		<IconCart :icons="cart" @remove-icon="removeFromCart" @clear-cart="cart=[]" v-if="cart.length"> </IconCart>
+		<IconCart :icons="cart" @remove-icon="removeFromCart" @clear-cart="cart = []" v-if="cart.length"> </IconCart>
 	</div>
 </template>
 <script>
@@ -61,24 +54,24 @@ import ICON_DATA from '../data/icons_data.json';
 import IconCart from './IconCart.vue'
 export default {
 	name: 'app-icon-preview',
-	components:{IconCart},
+	components: { IconCart },
 	data() {
 		return {
-			iconFreq:Object.keys(ICON_DATA).map(k=>({name:k,frequency:ICON_DATA[k]})),
+			iconFreq: Object.keys(ICON_DATA).map(k => ({ name: k, frequency: ICON_DATA[k] })),
 			iconsData: [],
-			sort:false,
-			azSort:false,
-			showNames:false,
-			filteredIcons:[],
-			search:'',
-			hoveredIcon:'',
-			cartEnabled:false,
-			cart:[]
+			sort: false,
+			azSort: false,
+			showNames: false,
+			filteredIcons: [],
+			search: '',
+			hoveredIcon: '',
+			cartEnabled: false,
+			cart: []
 		}
 	},
 	beforeMount() { },
 	mounted() {
-		this.filteredIcons=this.iconFreq
+		this.filteredIcons = this.iconFreq
 	},
 	unmounted() { },
 	methods: {
@@ -122,40 +115,40 @@ export default {
 			this.search = e.detail.value;
 			this.filteredIcons = this.iconFreq.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase()))
 		},
-		cartClick(icon){
-			const isThere=this.cart.find(i=>i==icon);
-			if(isThere) this.removeFromCart(icon)
+		cartClick(icon) {
+			const isThere = this.cart.find(i => i == icon);
+			if (isThere) this.removeFromCart(icon)
 			else this.addToCart(icon)
 		},
-		addToCart(icon){
+		addToCart(icon) {
 			this.cart.push(icon)
 		},
-		removeFromCart(icon){
-			this.cart=this.cart.filter(i=>i!==icon)
+		removeFromCart(icon) {
+			this.cart = this.cart.filter(i => i !== icon)
 		},
-		getColor({frequency,name},hover){
-			if(this.cartEnabled && hover){
-				if(this.cart.includes(name)) return 'error';
+		getColor({ frequency, name }, hover) {
+			if (this.cartEnabled && hover) {
+				if (this.cart.includes(name)) return 'error';
 				else return 'success'
 			}
 			else return 'error'
 		}
 	},
 	computed: {
-    badgeColor() {
-        return (icon) => {
-					if(this.cart.includes(icon.name)) return 'error';
-					else if(this.cartEnabled&&this.hoveredIcon == icon.name) return 'success';
-					return 'primary'
-        };
-    },
-    badgeContent() {
-        return (icon) => {
-					if (!this.cartEnabled || this.hoveredIcon !== icon.name) return icon.frequency;
-					return this.cart.includes(icon.name) ? '-' : '+';
-        };
-    }
-  }
+		badgeColor() {
+			return (icon) => {
+				if (this.cart.includes(icon.name)) return 'error';
+				else if (this.cartEnabled && this.hoveredIcon == icon.name) return 'success';
+				return 'primary'
+			};
+		},
+		badgeContent() {
+			return (icon) => {
+				if (!this.cartEnabled || this.hoveredIcon !== icon.name) return icon.frequency;
+				return this.cart.includes(icon.name) ? '-' : '+';
+			};
+		}
+	}
 }
 </script>
 <style>
@@ -173,7 +166,7 @@ export default {
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.primary-container{
+.primary-container {
 	padding: 10px;
 	color: #fff;
 	display: flex;
@@ -181,36 +174,39 @@ export default {
 	align-items: stretch;
 	height: 99vh;
 }
-.control-panel,.data-panel{
+
+.control-panel,
+.data-panel {
 	display: flex;
-	gap:20px;
+	gap: 20px;
 	align-items: center;
 }
-.control-panel>nile-input{
-	flex:1;
+
+.control-panel>nile-input {
+	flex: 1;
 }
 
-.control-panel{
+.control-panel {
 	background-color: white;
 }
 
-.icons-data-container{
+.icons-data-container {
 	overflow-y: auto;
-	flex:1;
+	flex: 1;
 
-	display:flex;
-	flex-wrap:wrap;
-	gap:20px;
-	padding:10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 10px;
 }
 
-.icon-div{
+.icon-div {
 	z-index: 2;
-	display:flex;
-	flex-direction:column;
-	align-items:center;
-	gap:5px;
-	position:relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	position: relative;
 	color: #555;
 	/* width: 100px; */
 
@@ -221,22 +217,23 @@ export default {
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.icon-wrapper{
-padding: 10px;
+.icon-wrapper {
+	padding: 10px;
 }
 
-.icon-div:hover{
-	scale:1.5;
+.icon-div:hover {
+	scale: 1.5;
 }
 
-.icon-name{
+.icon-name {
 	max-width: 100%;
 	overflow: auto;
 	white-space: nowrap;
 	padding: 0 10px;
 }
+
 .icon-name::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
 /* Hover effect */

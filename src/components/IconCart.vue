@@ -3,41 +3,39 @@
     <v-row>
       <v-col cols="12" class="text-center">
         <v-btn color="red" @click="clearCart" v-if="icons.length">Clear Cart</v-btn>
-				<v-btn color="success" style="margin: 10px;" @click="saveCart" v-if="icons.length">Save Cart</v-btn>
+				<v-btn color="success" @click="this.$emit('save-cart',primaryIcon)" style="margin: 10px;" v-if="icons.length">Save Cart</v-btn>
       </v-col>
     </v-row>
-
     <v-row>
-      <v-col v-for="(icon, index) in icons" :key="index" cols="auto">
-				<v-card
-					class="icon-card"
-					:class="{ 'primary-item': icon === primaryItem }"
-					elevation="3"
-					@click="setPrimary(icon)"
-				>
-					<v-btn class="remove-btn" @click.stop="removeIcon(icon)" elevation="2" icon x-small>
-						<v-icon dark>mdi-close</v-icon>
-					</v-btn>
-					<nile-icon :name="icon" size="32"></nile-icon>
-					<p class="icon-name">{{ icon }}</p>
-				</v-card>
-      </v-col>
+      <!-- LISTED ICONS -->
+        <IconList 
+          :icons="icons"
+          :showNames="showNames"
+          @icon-click="setPrimary"
+          :primaryIcon="primaryIcon"
+        />
     </v-row>
   </v-container>
 </template>
 
 <script>
+import IconList from './IconList.vue'
 export default {
   name: "IconCart",
+  components:{IconList},
   props: {
     icons: {
       type: Array,
       required: true,
     },
+    showNames:{
+      type:Boolean,
+      default:false
+    }
   },
   data() {
     return {
-      primaryItem: null,
+      primaryIcon: null,
     };
   },
   mounted() {
@@ -46,7 +44,7 @@ export default {
   watch: {
     icons(newIcons) {
       // If primary item is removed, select next available item
-      if (!newIcons.includes(this.primaryItem)) {
+      if (!newIcons.includes(this.primaryIcon)) {
         this.setRandomPrimary();
       }
     },
@@ -54,13 +52,13 @@ export default {
   methods: {
     setRandomPrimary() {
       if (this.icons.length > 0) {
-        this.primaryItem = this.icons[Math.floor(Math.random() * this.icons.length)];
+        this.primaryIcon = this.icons[Math.floor(Math.random() * this.icons.length)];
       } else {
-        this.primaryItem = null;
+        this.primaryIcon = null;
       }
     },
     setPrimary(icon) {
-      this.primaryItem = icon;
+      this.primaryIcon = icon;
     },
     removeIcon(icon) {
       this.$emit("remove-icon", icon);
@@ -110,21 +108,4 @@ export default {
 	right: -22px;
 }
 
-@keyframes heartbeat {
-  0% {
-    transform: scale(1);
-  }
-  30% {
-    transform: scale(1.1);
-  }
-  50% {
-    transform: scale(1);
-  }
-  70% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 </style>

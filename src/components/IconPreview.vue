@@ -34,27 +34,30 @@
 		</div>
 
 		<!-- LISTED ICONS -->
-		<div class="icons-data-container card">
-			<div class="icon-div" @click="this.cartEnabled ? cartClick(icon.name) : ''" v-for="(icon, index) in filteredIcons"
-				:key="icon.name" @mouseover="hoveredIcon = icon.name" @mouseleave="hoveredIcon = ''">
-				<v-badge :content="badgeContent(icon)" :color="badgeColor(icon)">
-					<div class="icon-wrapper">
-						<nile-icon :name="icon.name" size="32"></nile-icon>
-					</div>
-				</v-badge>
-				<div v-if="showNames" class="icon-name">{{ icon.name }}</div>
-			</div>
-		</div>
+			<IconList 
+				:icons="filteredIcons" 
+				:cart="cart"
+				:cartEnabled="cartEnabled"
+				:showNames="showNames"
+				@icon-click="(icon)=>cartEnabled ? iconClick(icon) : null"
+			/>
 
-		<IconCart :icons="cart" @remove-icon="removeFromCart" @clear-cart="cart = []" v-if="cart.length"> </IconCart>
+		<IconCart 
+			:icons="cart" 
+      :showNames="showNames"
+			@save-cart="saveCart"
+			@remove-icon="removeFromCart" 
+			@clear-cart="cart = []" 
+			v-if="cart.length"> </IconCart>
 	</div>
 </template>
 <script>
 import ICON_DATA from '../data/icons_data.json';
 import IconCart from './IconCart.vue'
+import IconList from './IconList.vue'
 export default {
 	name: 'app-icon-preview',
-	components: { IconCart },
+	components: { IconCart,IconList },
 	data() {
 		return {
 			iconFreq: Object.keys(ICON_DATA).map(k => ({ name: k, frequency: ICON_DATA[k] })),
@@ -65,11 +68,10 @@ export default {
 			filteredIcons: [],
 			search: '',
 			hoveredIcon: '',
-			cartEnabled: false,
+			cartEnabled: true,
 			cart: []
 		}
 	},
-	beforeMount() { },
 	mounted() {
 		this.filteredIcons = this.iconFreq
 	},
@@ -115,13 +117,13 @@ export default {
 			this.search = e.detail.value;
 			this.filteredIcons = this.iconFreq.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase()))
 		},
-		cartClick(icon) {
+		iconClick(icon) {
 			const isThere = this.cart.find(i => i == icon);
 			if (isThere) this.removeFromCart(icon)
 			else this.addToCart(icon)
 		},
 		addToCart(icon) {
-			this.cart.push(icon)
+			this.cart = [...this.cart,icon]
 		},
 		removeFromCart(icon) {
 			this.cart = this.cart.filter(i => i !== icon)
@@ -132,6 +134,9 @@ export default {
 				else return 'success'
 			}
 			else return 'error'
+		},
+		saveCart(primaryIcon){
+			console.log(primaryIcon)
 		}
 	},
 	computed: {
@@ -183,7 +188,7 @@ export default {
 }
 
 .control-panel>nile-input {
-	flex: 1;
+	flex: 1 0 none;
 }
 
 .control-panel {
@@ -197,7 +202,7 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 20px;
-	padding: 10px;
+	padding: 20px;
 }
 
 .icon-div {

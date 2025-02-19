@@ -195,41 +195,6 @@ export default {
 	background-color: white;
 }
 
-.icons-data-container {
-	overflow-y: auto;
-	flex: 1;
-
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
-	padding: 20px;
-}
-
-.icon-div {
-	z-index: 2;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 5px;
-	position: relative;
-	color: #555;
-	/* width: 100px; */
-
-	transition-duration: 200ms;
-	/* padding: 10px; */
-	background-color: #fff;
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.icon-wrapper {
-	padding: 10px;
-}
-
-.icon-div:hover {
-	scale: 1.5;
-}
-
 .icon-name {
 	max-width: 100%;
 	overflow: auto;

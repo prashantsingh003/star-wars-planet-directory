@@ -73,7 +73,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 10px;
+  padding: 20px;
 }
 
 .icon-div {
@@ -95,7 +95,7 @@ export default {
 }
 
 .icon-div:hover {
-  scale: 1.5;
+  scale: 1.2;
 }
 
 .icon-name {

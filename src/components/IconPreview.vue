@@ -26,11 +26,17 @@
 				Zero Count: {{ filteredIcons.reduce((acc, curr) => acc + Number(curr.frequency === 0), 0) }}
 			</nile-button>
 			<v-spacer></v-spacer>
-			<v-badge :content="cart.length">
-				<nile-button>
+			<v-badge :content="inCartIconLength">
+				<nile-button @click="dialog=!dialog">
 					Cart
 				</nile-button>
 			</v-badge>
+			<nile-button @click="showRemainingIcons()">
+				Show Remaining Icons
+			</nile-button>
+			<nile-button @click="filteredIcons=iconFreq">
+				Reset
+			</nile-button>
 		</div>
 
 		<!-- LISTED ICONS -->
@@ -49,15 +55,28 @@
 			@remove-icon="removeFromCart" 
 			@clear-cart="cart = []" 
 			v-if="cart.length"> </IconCart>
+			
+		<v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+			<IconCollection 
+				@delete-family="deleteFamily" 
+				@update-family="updateFamily"
+				:IconCollection="savediconsObj"/>
+		</v-dialog>
 	</div>
 </template>
 <script>
 import ICON_DATA from '../data/icons_data.json';
 import IconCart from './IconCart.vue'
+import IconCollection from './IconCollection.vue';
 import IconList from './IconList.vue'
 export default {
 	name: 'app-icon-preview',
-	components: { IconCart,IconList },
+	components: { IconCart,IconList,IconCollection },
 	data() {
 		return {
 			iconFreq: Object.keys(ICON_DATA).map(k => ({ name: k, frequency: ICON_DATA[k] })),
@@ -69,13 +88,24 @@ export default {
 			search: '',
 			hoveredIcon: '',
 			cartEnabled: true,
-			cart: []
+			cart: [],
+
+			dialog:false,
+			savediconsObj:localStorage.getItem('iconsObj')?JSON.parse(localStorage.getItem('iconsObj')):{}
 		}
 	},
 	mounted() {
 		this.filteredIcons = this.iconFreq
 	},
 	unmounted() { },
+  watch: {
+    savediconsObj: {
+      handler(newVal) {
+        this.saveToLocal(newVal);
+      },
+      deep: true,
+    },
+  },
 	methods: {
 		handleSort() {
 			if (this.sort) {
@@ -86,6 +116,11 @@ export default {
 				this.filteredIcons.sort((a, b) => a.frequency > b.frequency ? 1 : -1)
 				this.sort = true;
 			}
+		},
+		showRemainingIcons(){
+			const selected=Object.keys(this.savediconsObj).reduce((acc,curr)=>([...acc,...this.savediconsObj[curr]]),[])
+			console.log(selected,this.savediconsObj)
+			this.filteredIcons=this.filteredIcons.filter(i=>!selected.includes(i.name))
 		},
 		handleAlphaSort() {
 			if (this.azSort) {
@@ -136,10 +171,34 @@ export default {
 			else return 'error'
 		},
 		saveCart(primaryIcon){
-			console.log(primaryIcon)
+			this.savediconsObj={...this.savediconsObj,...{[primaryIcon.name]:this.cart.map(i=>i.name)}}
+			this.cart=[]
+		},
+		saveToLocal(val){
+			localStorage.setItem('iconsObj',JSON.stringify(val))
+		},
+		deleteFamily(iconName){
+			const keyToDelete = iconName;
+			this.savediconsObj = Object.fromEntries(
+				Object.entries(this.savediconsObj).filter(([key]) => key !== keyToDelete)
+			);
+		},
+		updateFamily(iconName,newVal){
+			const obj={}
+			Object.keys(this.savediconsObj).forEach(icon=>{
+				if(icon==iconName){
+					obj[icon]=newVal;
+				}
+				else{
+					obj[icon]=this.savediconsObj[icon]
+				}
+			})
 		}
 	},
 	computed: {
+		inCartIconLength(){
+			return Object.keys(this.savediconsObj).reduce((acc,curr)=>acc+this.savediconsObj[curr].length,0)
+		},
 		badgeColor() {
 			return (icon) => {
 				if (this.cart.includes(icon.name)) return 'error';

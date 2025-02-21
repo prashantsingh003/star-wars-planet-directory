@@ -13,6 +13,7 @@
           :showNames="showNames"
           @icon-click="setPrimary"
           :primaryIcon="primaryIcon"
+				  :highlightZero="highlightZero"
         />
     </v-row>
   </v-container>
@@ -31,7 +32,8 @@ export default {
     showNames:{
       type:Boolean,
       default:false
-    }
+    },
+    highlightZero: Boolean
   },
   data() {
     return {

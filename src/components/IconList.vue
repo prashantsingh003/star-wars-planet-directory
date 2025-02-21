@@ -34,6 +34,7 @@ export default {
     primaryIcon:Object,
     cartEnabled: Boolean, // Whether carting is enabled
     showNames: Boolean, // Whether to show names
+    highlightZero: Boolean
   },
   data() {
     return {
@@ -48,6 +49,7 @@ export default {
       return (icon) => {
         if (this.cart.find(e=>e.name==icon.name)) return "error";
         else if (this.cartEnabled && this.hoveredIcon === icon.name) return "success";
+        else if(this.highlightZero && !icon.frequency) return 'warning'
         return "primary";
       };
     },

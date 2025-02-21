@@ -11,10 +11,12 @@
 				<nile-icon :name="azSort ? 'arrowleft' : 'arrowright'"></nile-icon>
 			</nile-button>
 			<nile-input :value="search" @nile-input="handleInput" placeholder="Search"></nile-input>
-			<div>
+			<div style="display: flex; gap: 10px;">
 				<nile-slide-toggle label="Names" :isChecked="showNames" @nile-change="(e) => showNames = e.detail.checked">
 				</nile-slide-toggle>
-				<nile-slide-toggle label="Carting" :isChecked="cartEnabled" @nile-change="(e) => cartEnabled = e.detail.checked">
+				<nile-slide-toggle label="Enable Cart" :isChecked="cartEnabled" @nile-change="(e) => cartEnabled = e.detail.checked">
+				</nile-slide-toggle>
+				<nile-slide-toggle label="Highlight Zero" :isChecked="highlightZero" @nile-change="(e) => highlightZero = e.detail.checked">
 				</nile-slide-toggle>
 			</div>
 		</div>
@@ -31,6 +33,9 @@
 					Cart
 				</nile-button>
 			</v-badge>
+			<nile-button @click="copyToClipboard()">
+				Copy Cart
+			</nile-button>
 			<nile-button @click="showRemainingIcons()">
 				Show Remaining Icons
 			</nile-button>
@@ -45,6 +50,7 @@
 				:cart="cart"
 				:cartEnabled="cartEnabled"
 				:showNames="showNames"
+				:highlightZero="highlightZero"
 				@icon-click="(icon)=>cartEnabled ? iconClick(icon) : null"
 			/>
 
@@ -54,6 +60,7 @@
 			@save-cart="saveCart"
 			@remove-icon="removeFromCart" 
 			@clear-cart="cart = []" 
+			:highlightZero="highlightZero"
 			v-if="cart.length"> </IconCart>
 			
 		<v-dialog
@@ -89,6 +96,7 @@ export default {
 			hoveredIcon: '',
 			cartEnabled: true,
 			cart: [],
+			highlightZero:false,
 
 			dialog:false,
 			savediconsObj:localStorage.getItem('iconsObj')?JSON.parse(localStorage.getItem('iconsObj')):{}
@@ -182,6 +190,15 @@ export default {
 			this.savediconsObj = Object.fromEntries(
 				Object.entries(this.savediconsObj).filter(([key]) => key !== keyToDelete)
 			);
+		},
+		copyToClipboard(){
+			navigator.clipboard.writeText(JSON.stringify(this.savediconsObj, null, 2))
+				.then(() => {
+					alert("Object copied to clipboard successfully!");
+				})
+				.catch(err => {
+						alert("Failed to copy object: ");
+				})
 		},
 		updateFamily(iconName,newVal){
 			const obj={}

@@ -10,6 +10,6 @@ import './style.scss';
 const app = createApp(App)
 app.use(router)
 
-app.mount('#app')
 app.use(vuetify)
 app.use(store)
+app.mount('#app')

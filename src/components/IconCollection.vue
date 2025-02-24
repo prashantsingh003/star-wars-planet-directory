@@ -17,7 +17,7 @@
         <div class="icon-list-wrapper">
           <IconList
             :icons="icons.map(name => ({ name }))"
-            :showNames="false"
+            :showNames="showNames"
           />
         </div>
       </v-card>
@@ -37,6 +37,7 @@ export default {
       required: false,
       default: () => ({}),
     },
+    showNames:Boolean
   },
   data() {
     return {

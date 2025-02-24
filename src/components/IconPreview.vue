@@ -70,6 +70,7 @@
       transition="dialog-bottom-transition"
     >
 			<IconCollection 
+				:showNames="showNames"
 				@delete-family="deleteFamily" 
 				@update-family="updateFamily"
 				:IconCollection="savediconsObj"/>

@@ -2,14 +2,14 @@
   <v-container>
     <v-row>
       <v-col cols="12" class="text-center">
-        <v-btn color="red" @click="clearCart" v-if="icons.length">Clear Cart</v-btn>
-				<v-btn color="success" @click="this.$emit('save-cart',primaryIcon)" style="margin: 10px;" v-if="icons.length">Save Cart</v-btn>
+        <v-btn color="red" @click="clearCart" v-if="cartIcons.length">Clear Cart</v-btn>
+				<v-btn color="success" @click="this.$emit('save-cart',primaryIcon)" style="margin: 10px;" v-if="cartIcons.length">Save Cart</v-btn>
       </v-col>
     </v-row>
     <v-row>
       <!-- LISTED ICONS -->
-        <IconList 
-          :icons="icons"
+        <IconList
+          :icons="cartIcons"
           :showNames="showNames"
           @icon-click="setPrimary"
           :primaryIcon="primaryIcon"
@@ -25,10 +25,6 @@ export default {
   name: "IconCart",
   components:{IconList},
   props: {
-    icons: {
-      type: Array,
-      required: true,
-    },
     showNames:{
       type:Boolean,
       default:false
@@ -44,7 +40,7 @@ export default {
     this.setRandomPrimary();
   },
   watch: {
-    icons(newIcons) {
+    cartIcons(newIcons) {
       // If primary item is removed, select next available item
       if (!newIcons.includes(this.primaryIcon)) {
         this.setRandomPrimary();
@@ -53,8 +49,8 @@ export default {
   },
   methods: {
     setRandomPrimary() {
-      if (this.icons.length > 0) {
-        this.primaryIcon = this.icons[Math.floor(Math.random() * this.icons.length)];
+      if (this.cartIcons.length > 0) {
+        this.primaryIcon = this.cartIcons[Math.floor(Math.random() * this.cartIcons.length)];
       } else {
         this.primaryIcon = null;
       }
@@ -62,13 +58,15 @@ export default {
     setPrimary(icon) {
       this.primaryIcon = icon;
     },
-    removeIcon(icon) {
-      this.$emit("remove-icon", icon);
-    },
     clearCart() {
       this.$emit("clear-cart");
     },
   },
+  computed:{
+		cartIcons(){
+			return this.$store.getters.getCart;
+		}
+  }
 };
 </script>
 

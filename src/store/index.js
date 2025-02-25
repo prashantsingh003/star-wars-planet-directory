@@ -1,63 +1,49 @@
 import { createStore } from 'vuex';
 import ICON_DATA from '../data/icons_data.json';
 
-const LOCAL_STORAGE_KEY="iconsObj"
+const LOCAL_STORAGE_OLD_KEY="iconsObj"
+const LOCAL_STORAGE_KEY="appIconObj"
 
 const store = createStore({
   modules: {},
   state () {
-    const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-		const finalizedCarts = storedData || []
-		const iconsList=Object.keys(ICON_DATA).map(k => ({ name: k, frequency: ICON_DATA[k] }))
     return {
-      iconsList,
+      iconsList:Object.keys(ICON_DATA).map(k => ({ name: k, frequency: ICON_DATA[k] })),
       cart: [],
-      finalizedCarts: finalizedCarts
+      finalizedCarts: []
     };
 	},
   mutations: {
     SAVE_TO_LOCAL_STORAGE(state) {
-      const data = {
-        iconsList: state.iconsList,
-        cart: state.cart,
-        finalizedCarts: state.finalizedCarts
-      };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state.finalizedCarts));
     },
-
     // Cart operations
     ADD_TO_CART(state, icon) {
       const existingIcon = state.cart.find(i => i.name === icon.name);
-      if (!existingIcon) {
-        state.cart.push({ ...icon });
-      } else {
-        existingIcon.frequency++;
-      }
-      this.commit('SAVE_TO_LOCAL_STORAGE');
+      if (!existingIcon) state.cart=[...state.cart,icon];
     },
     REMOVE_FROM_CART(state, iconName) {
       state.cart = state.cart.filter(icon => icon.name !== iconName);
-      this.commit('SAVE_TO_LOCAL_STORAGE');
     },
-    SELECT_PRIMARY_ICON(state, iconName) {
-      state.cart = state.cart.map(icon => ({
-        ...icon,
-        isPrimary: icon.name === iconName
-      }));
-      this.commit('SAVE_TO_LOCAL_STORAGE');
+    CLEAR_CART(state) {
+      state.cart = [];
     },
-    CHANGE_PRIMARY_ICON(state, iconName) {
-      const icon = state.cart.find(icon => icon.name === iconName);
-      if (icon) {
-        state.cart.forEach(icon => (icon.isPrimary = false));
-        icon.isPrimary = true;
-        this.commit('SAVE_TO_LOCAL_STORAGE');
-      }
-    },
-    SAVE_CART(state) {
-      const primaryIcon = state.cart.find(icon => icon.isPrimary)?.name || '';
+    // SELECT_PRIMARY_ICON(state, iconName) {
+    //   state.cart = state.cart.map(icon => ({
+    //     ...icon,
+    //     isPrimary: icon.name === iconName
+    //   }));
+    // },
+    // CHANGE_PRIMARY_ICON(state, iconName) {
+    //   const icon = state.cart.find(icon => icon.name === iconName);
+    //   if (icon) {
+    //     state.cart.forEach(icon => (icon.isPrimary = false));
+    //     icon.isPrimary = true;
+    //   }
+    // },
+    SAVE_CART(state,primartIconName) {
       state.finalizedCarts.push({
-        primaryIcon,
+        primaryIcon:primartIconName,
         family: [...state.cart]
       });
       state.cart = [];
@@ -106,22 +92,40 @@ const store = createStore({
         }
         this.commit('SAVE_TO_LOCAL_STORAGE');
       }
-    }
+    },
+		async setInitialData(state){
+			const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+			state.finalizedCarts=storedData || []
+		},
+		async migrateData(state){
+			if(JSON.parse(localStorage.getItem('updated'))) return;
+
+			const oldObj=JSON.parse(localStorage.getItem(LOCAL_STORAGE_OLD_KEY));
+			if(!oldObj) return;
+			const newObj=[]
+			Object.keys(oldObj).forEach(prName=>{
+				const family=oldObj[prName].map((iconName=>state.iconsList.find(i=>i.name==iconName)))
+				newObj.push({
+					primaryIcon:prName,
+					family
+				})
+			})
+			localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(newObj))
+			JSON.parse(localStorage.setItem('updated',true))
+		}
   },
 	actions:{
-    initializeStore({ commit }) {
-      const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-      if (storedData) {
-        commit('SET_ICONS_LIST', storedData.iconsList || []);
-        commit('SET_CART', storedData.cart || []);
-        commit('SET_FINALIZED_CARTS', storedData.finalizedCarts || []);
-      }
+    async initializeStore({ commit }) {
+			await commit('migrateData')
+			await commit('setInitialData')
     }
   },
   getters: {
     getCart: state => state.cart,
     getIconsList: state => state.iconsList,
-    getFinalizedCarts: state => state.finalizedCarts
+    getFinalizedCarts: state => state.finalizedCarts,
+    getFinalizedIcons: state => state.finalizedCarts.reduce((acc,curr)=>[...acc,...curr.family.map(i=>i.name)],[]),
+		getCopyContent: state=> state.finalizedCarts.map(coll=>({...coll,family:coll.family.map(i=>i.name)}))
   }
 
 });

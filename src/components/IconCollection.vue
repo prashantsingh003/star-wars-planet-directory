@@ -1,6 +1,6 @@
 <template>
   <div class="icon-collection-container">
-    <div v-for="(icons, primaryIcon) in iconCollections" :key="primaryIcon" class="icon-family">
+    <div v-for="{primaryIcon,family} in iconCollections" :key="primaryIcon" class="icon-family">
       <v-card class="family-card">
         <v-row align="center" justify="space-between" class="family-header">
           <v-col cols="auto" class="primary-icon-title">
@@ -16,8 +16,9 @@
 
         <div class="icon-list-wrapper">
           <IconList
-            :icons="icons.map(name => ({ name }))"
+            :icons="family"
             :showNames="showNames"
+            :primaryIcon="{name:primaryIcon}"
           />
         </div>
       </v-card>
@@ -32,42 +33,21 @@ export default {
   name: 'IconCollection',
   components: { IconList },
   props: {
-    initialCollections: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     showNames:Boolean
   },
   data() {
-    return {
-      iconCollections: this.getIconCollections(),
-    };
+    return { };
   },
-  watch: {
-    initialCollections: {
-      handler(newVal) {
-        this.iconCollections=newVal;
-      },
-      deep: true,
-    },
+  computed:{
+    iconCollections(){
+      return  this.$store.getters.getFinalizedCarts
+    }
   },
   methods: {
-    // ✅ Retrieve collections from localStorage or initialize with default
-    getIconCollections() {
-      const stored = localStorage.getItem('iconsObj');
-      return stored ? JSON.parse(stored) : this.initialCollections;
-    },
-
-    // ✅ Save collections to localStorage
-    saveToLocalStorage(data) {
-      localStorage.setItem('iconsObj', JSON.stringify(data));
-    },
-
     // ✅ Delete entire family (primary + its icons)
     deleteFamily(primaryIcon) {
       if (confirm(`Are you sure you want to delete the "${primaryIcon}" family?`)) {
-				this.$emit('delete-family',primaryIcon)
+				this.$store.commit('REMOVE_FROM_FINALIZED_CARTS',primaryIcon)
       }
     },
 

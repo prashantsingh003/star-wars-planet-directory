@@ -75,15 +75,10 @@ export default {
 				})
     },
     generateNileIconRegex(strings) {
-      // Escape special characters in each string to avoid regex injection
-      const escapedStrings = strings.map(str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-
-      // Join the strings into a regex OR group
-      const regexPattern = `<nile-icon.*?(${escapedStrings.join('|')}).*?>`;
-
-      // Return a RegExp object with the 'g' and 'i' flags (global and case-insensitive)
-      return new RegExp(regexPattern, 'gi');
-    }
+    const escapedStrings = strings.map(str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regexPattern = `<nile-icon[^>]*(${escapedStrings.join('|')})[^>]*>`;
+    return regexPattern
+}
 
   },
 };

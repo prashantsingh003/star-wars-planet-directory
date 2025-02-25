@@ -213,7 +213,7 @@ export default {
 			return this.$store.getters.getFinalizedIcons;
 		},
 		getCopyContent(){
-			return this.$store.getters.getCopyContent;
+			return this.$store.getters.getFinalizedCarts;
 		}
 	}
 }

@@ -7,6 +7,12 @@
             <nile-icon :name="primaryIcon" size="28"></nile-icon>
             <span>{{ primaryIcon }}</span>
           </v-col>
+          <v-spacer></v-spacer>
+          <v-col cols="auto">
+            <v-btn icon variant="text" class="delete-btn" @click="copyRegex(family)">
+              <v-icon size="20" color="green">mdi-content-copy</v-icon>
+            </v-btn>
+          </v-col>
           <v-col cols="auto">
             <v-btn icon variant="text" class="delete-btn" @click="deleteFamily(primaryIcon)">
               <v-icon size="20" color="red">mdi-delete</v-icon>
@@ -61,6 +67,24 @@ export default {
     //     alert("Primary icon cannot be deleted!");
     //   }
     // },
+    copyRegex(icons){
+      const regex=this.generateNileIconRegex(icons.map(i=>i.name))
+      navigator.clipboard.writeText(regex)
+				.then(() => {
+					alert("Copied Regex: "+regex);
+				})
+    },
+    generateNileIconRegex(strings) {
+      // Escape special characters in each string to avoid regex injection
+      const escapedStrings = strings.map(str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+      // Join the strings into a regex OR group
+      const regexPattern = `<nile-icon.*?(${escapedStrings.join('|')}).*?>`;
+
+      // Return a RegExp object with the 'g' and 'i' flags (global and case-insensitive)
+      return new RegExp(regexPattern, 'gi');
+    }
+
   },
 };
 </script>
